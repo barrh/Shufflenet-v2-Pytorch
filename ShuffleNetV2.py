@@ -8,8 +8,8 @@ __all__ = ['ShuffleNetV2',
            'shufflenetv2_x1_5', 'shufflenetv2_x2_0']
 
 model_urls = {
-    'shufflenetv2_x0.5': 'https://github.com/barrh/Shufflenet-v2-Pytorch/releases/download/v0.1.0/shufflenetv2_x0.5.pt',
-    'shufflenetv2_x1.0': 'https://github.com/barrh/Shufflenet-v2-Pytorch/releases/download/v0.1.0/shufflenetv2_x1.pt',
+    'shufflenetv2_x0.5': 'https://github.com/barrh/Shufflenet-v2-Pytorch/releases/download/v0.1.0/shufflenetv2_x0.5-debe908068.pt',
+    'shufflenetv2_x1.0': 'https://github.com/barrh/Shufflenet-v2-Pytorch/releases/download/v0.1.0/shufflenetv2_x1-7751e29855.pt',
     'shufflenetv2_x1.5': None,
     'shufflenetv2_x2.0': None,
 }
