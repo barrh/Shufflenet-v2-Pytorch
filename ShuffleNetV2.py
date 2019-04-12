@@ -83,10 +83,9 @@ class InvertedResidual(nn.Module):
 
 
 class ShuffleNetV2(nn.Module):
-    def __init__(self, num_classes=1000, input_size=224, width_mult=1.):
+    def __init__(self, num_classes=1000, input_size=224, width_mult=1):
         super(ShuffleNetV2, self).__init__()
 
-        self.stage_repeats = [4, 8, 4]
         try:
             self.stage_out_channels = self._getStages(float(width_mult))
         except KeyError:
@@ -103,17 +102,18 @@ class ShuffleNetV2(nn.Module):
 
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        self.features = []
-        # building inverted residual blocks
-        for repeats, output_channels in zip(self.stage_repeats, self.stage_out_channels[1:]):
-            self.features.append(InvertedResidual(input_channels, output_channels, 2))
+        stage_names = ['stage{}'.format(i) for i in [2, 3, 4]]
+        stage_repeats = [4, 8, 4]
+        for name, repeats, output_channels in zip(
+                    stage_names, stage_repeats, self.stage_out_channels[1:]):
+            seq = [InvertedResidual(input_channels, output_channels, 2)]
             for i in range(repeats-1):
-                self.features.append(InvertedResidual(output_channels, output_channels, 1))
+                seq.append(InvertedResidual(output_channels, output_channels, 1))
+            setattr(self, name, nn.Sequential(*seq))
             input_channels = output_channels
-        self.features = nn.Sequential(*self.features)
 
         output_channels = self.stage_out_channels[-1]
-        self.conv_last = nn.Sequential(
+        self.conv5 = nn.Sequential(
             nn.Conv2d(input_channels, output_channels, 1, 1, 0, bias=False),
             nn.BatchNorm2d(output_channels),
             nn.ReLU(inplace=True),
@@ -124,16 +124,18 @@ class ShuffleNetV2(nn.Module):
         self.globalpool = nn.AvgPool2d(int(input_size/32))
 
         # expected ifm size is: channels x 1 x 1
-        self.classifier = nn.Linear(self.stage_out_channels[-1], num_classes)
+        self.fc = nn.Linear(self.stage_out_channels[-1], num_classes)
 
     def forward(self, x):
         x = self.conv1(x)
         x = self.maxpool(x)
-        x = self.features(x)
-        x = self.conv_last(x)
+        x = self.stage2(x)
+        x = self.stage3(x)
+        x = self.stage4(x)
+        x = self.conv5(x)
         x = self.globalpool(x)
         x = x.view(-1, self.stage_out_channels[-1])
-        x = self.classifier(x)
+        x = self.fc(x)
         return x
 
     @staticmethod
