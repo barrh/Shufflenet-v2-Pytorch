@@ -3,7 +3,7 @@ import functools
 import torch
 import torch.nn as nn
 
-__all__ = ['ShuffleNetV2',
+__all__ = ['ShuffleNetV2', 'shufflenetv2',
            'shufflenetv2_x0_5', 'shufflenetv2_x1_0',
            'shufflenetv2_x1_5', 'shufflenetv2_x2_0']
 
@@ -149,7 +149,7 @@ class ShuffleNetV2(nn.Module):
         return stages[str(mult)]
 
 
-def shufflenetv2(width_mult=1, num_classes=1000, input_size=224, pretrained=False):
+def shufflenetv2(pretrained=False, num_classes=1000, input_size=224, width_mult=1, **kwargs):
     model = ShuffleNetV2(num_classes=num_classes, input_size=input_size, width_mult=width_mult)
 
     if pretrained:
@@ -168,17 +168,17 @@ def shufflenetv2(width_mult=1, num_classes=1000, input_size=224, pretrained=Fals
     return model
 
 
-def shufflenetv2_x0_5(pretrained=False, num_classes=1000, input_size=224):
-    return shufflenetv2(0.5, num_classes, input_size, pretrained)
+def shufflenetv2_x0_5(pretrained=False, num_classes=1000, input_size=224, **kwargs):
+    return shufflenetv2(pretrained, num_classes, input_size, 0.5)
 
 
-def shufflenetv2_x1_0(pretrained=False, num_classes=1000, input_size=224):
-    return shufflenetv2(1, num_classes, input_size, pretrained)
+def shufflenetv2_x1_0(pretrained=False, num_classes=1000, input_size=224, **kwargs):
+    return shufflenetv2(pretrained, num_classes, input_size, 1)
 
 
-def shufflenetv2_x1_5(pretrained=False, num_classes=1000, input_size=224):
-    return shufflenetv2(1.5, num_classes, input_size, pretrained)
+def shufflenetv2_x1_5(pretrained=False, num_classes=1000, input_size=224, **kwargs):
+    return shufflenetv2(pretrained, num_classes, input_size, 1.5)
 
 
-def shufflenetv2_x2_0(pretrained=False, num_classes=1000, input_size=224):
-    return shufflenetv2(2, num_classes, input_size, pretrained)
+def shufflenetv2_x2_0(pretrained=False, num_classes=1000, input_size=224, **kwargs):
+    return shufflenetv2(pretrained, num_classes, input_size, 2)
